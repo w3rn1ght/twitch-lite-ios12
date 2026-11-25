@@ -1,4 +1,5 @@
 #import "TVMainViewController.h"
+#import "TVHomeViewController.h"
 #import "TVFollowingViewController.h"
 #import "TVSearchViewController.h"
 #import "TVFavoritesViewController.h"
@@ -59,25 +60,28 @@
     [super viewDidLoad];
     self.view.backgroundColor = TVColorBackground();
 
+    TVHomeViewController *home = [[TVHomeViewController alloc] init];
     TVFollowingViewController *following = [[TVFollowingViewController alloc] init];
     TVSearchViewController *search = [[TVSearchViewController alloc] init];
     TVFavoritesViewController *favorites = [[TVFavoritesViewController alloc] init];
     TVProfileViewController *profile = [[TVProfileViewController alloc] init];
 
+    UINavigationController *homeNav = [self navigationControllerWithRoot:home];
     UINavigationController *followingNav = [self navigationControllerWithRoot:following];
     UINavigationController *searchNav = [self navigationControllerWithRoot:search];
     UINavigationController *favoritesNav = [self navigationControllerWithRoot:favorites];
     UINavigationController *profileNav = [self navigationControllerWithRoot:profile];
 
     TVWordmarkView *wordmark = [[TVWordmarkView alloc] initWithFrame:CGRectMake(0.0, 0.0, 96.0, 24.0)];
-    following.navigationItem.titleView = wordmark;
+    home.navigationItem.titleView = wordmark;
 
+    homeNav.tabBarItem = [self tabBarItemWithTitle:@"Главная" icon:TVIconHome];
     followingNav.tabBarItem = [self tabBarItemWithTitle:@"Подписки" icon:TVIconHeart];
     searchNav.tabBarItem = [self tabBarItemWithTitle:@"Поиск" icon:TVIconSearch];
     favoritesNav.tabBarItem = [self tabBarItemWithTitle:@"Избранное" icon:TVIconStarFilled];
     profileNav.tabBarItem = [self tabBarItemWithTitle:@"Профиль" icon:TVIconPerson];
 
-    self.viewControllers = @[followingNav, searchNav, favoritesNav, profileNav];
+    self.viewControllers = @[homeNav, followingNav, searchNav, favoritesNav, profileNav];
     self.selectedIndex = 0;
 
     TVStyleTabBar(self.tabBar);

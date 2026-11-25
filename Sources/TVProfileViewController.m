@@ -6,6 +6,7 @@
 #import "TVSession.h"
 #import "TVCommonViews.h"
 #import "TVImageLoader.h"
+#import "TVAPI.h"
 #import "TVLoginViewController.h"
 
 @interface TVProfileViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -242,6 +243,8 @@
     }
     [sections addObject:@[
         @{@"title": @"Версия", @"detail": version},
+        @{@"title": @"Диагностика", @"detail": @"картинки и API", @"action": @"diagnostics"},
+        @{@"title": @"Сбросить кэш картинок", @"action": @"clearcache"},
         @{@"title": @"Открыть twitch.tv", @"action": @"safari"},
         @{@"title": @"О приложении", @"action": @"about"},
     ]];
@@ -347,6 +350,55 @@
     TVShowAlert(self, @"О приложении", message);
 }
 
+- (void)showDiagnostics {
+    __block NSString *avatarReport = @"нет ответа";
+    __block NSString *boxArtReport = @"нет ответа";
+    __block NSString *apiReport = @"нет ответа";
+    dispatch_group_t group = dispatch_group_create();
+
+    dispatch_group_enter(group);
+    [[TVImageLoader shared] probeURL:@"https://static-cdn.jtvnw.net/jtv_user_pictures/e437c251-ced5-476f-b3c6-fd6686c51550-profile_image-70x70.png"
+                          completion:^(NSString *report) {
+        avatarReport = report ?: @"—";
+        dispatch_group_leave(group);
+    }];
+
+    dispatch_group_enter(group);
+    [[TVImageLoader shared] probeURL:@"https://static-cdn.jtvnw.net/ttv-boxart/509658-120x160.jpg"
+                          completion:^(NSString *report) {
+        boxArtReport = report ?: @"—";
+        dispatch_group_leave(group);
+    }];
+
+    dispatch_group_enter(group);
+    [[TVAPI shared] fetchTopStreamsWithCompletion:^(NSArray<TVStream *> *streams, NSError *error) {
+        if (streams) {
+            apiReport = [NSString stringWithFormat:@"OK · %lu стримов", (unsigned long)streams.count];
+        } else {
+            apiReport = error.localizedDescription ?: @"ошибка";
+        }
+        dispatch_group_leave(group);
+    }];
+
+    __weak typeof(self) weakSelf = self;
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        __strong typeof(self) strongSelf = weakSelf;
+        if (!strongSelf) {
+            return;
+        }
+        UIDevice *device = [UIDevice currentDevice];
+        NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"] ?: @"?";
+        NSString *message = [NSString stringWithFormat:
+            @"Twitch Lite %@\n%@ · iOS %@\n\n"
+            @"API: %@\n"
+            @"Аватар (CDN): %@\n"
+            @"Обложка (CDN): %@\n\n"
+            @"Если CDN отвечает ошибкой, картинки блокирует сеть или VPN, а не приложение.",
+            version, device.model, device.systemVersion, apiReport, avatarReport, boxArtReport];
+        TVShowAlert(strongSelf, @"Диагностика", message);
+    });
+}
+
 #pragma mark - UITableView
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -407,7 +459,12 @@
     NSDictionary<NSString *, id> *row = [self rowAtIndexPath:indexPath];
     NSString *action = row[@"action"];
     if ([action isEqualToString:@"favorites"]) {
-        self.tabBarController.selectedIndex = 2;
+        self.tabBarController.selectedIndex = 3;
+    } else if ([action isEqualToString:@"diagnostics"]) {
+        [self showDiagnostics];
+    } else if ([action isEqualToString:@"clearcache"]) {
+        [[TVImageLoader shared] clearCache];
+        TVShowAlert(self, @"Готово", @"Кэш картинок очищен. Потяните экраны вниз, чтобы загрузить их заново.");
     } else if ([action isEqualToString:@"safari"]) {
         [self openSafari];
     } else if ([action isEqualToString:@"about"]) {

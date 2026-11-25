@@ -1,4 +1,5 @@
 #import "TVStreamCell.h"
+#import <math.h>
 #import "TVTheme.h"
 #import "TVIcons.h"
 #import "TVCommonViews.h"
@@ -16,6 +17,7 @@
 @property (nonatomic, strong) TVPillView *offlinePill;
 @property (nonatomic, strong) UIButton *starButton;
 @property (nonatomic, strong) NSLayoutConstraint *thumbnailHeightConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *thumbnailWidthConstraint;
 @property (nonatomic, copy) NSString *login;
 @end
 
@@ -79,10 +81,11 @@
         [self.contentView addSubview:_gameLabel];
 
         _thumbnailHeightConstraint = [_thumbnailView.heightAnchor constraintEqualToAnchor:_thumbnailView.widthAnchor multiplier:9.0 / 16.0];
+        _thumbnailWidthConstraint = [_thumbnailView.widthAnchor constraintEqualToConstant:300.0];
         [NSLayoutConstraint activateConstraints:@[
             [_thumbnailView.topAnchor constraintEqualToAnchor:self.contentView.topAnchor constant:12.0],
-            [_thumbnailView.leadingAnchor constraintEqualToAnchor:self.contentView.leadingAnchor constant:12.0],
-            [_thumbnailView.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-12.0],
+            [_thumbnailView.centerXAnchor constraintEqualToAnchor:self.contentView.centerXAnchor],
+            _thumbnailWidthConstraint,
             _thumbnailHeightConstraint,
 
             [_liveBadge.topAnchor constraintEqualToAnchor:_thumbnailView.topAnchor constant:8.0],
@@ -93,7 +96,7 @@
             [_offlinePill.centerYAnchor constraintEqualToAnchor:_thumbnailView.centerYAnchor],
 
             [_avatarView.topAnchor constraintEqualToAnchor:_thumbnailView.bottomAnchor constant:10.0],
-            [_avatarView.leadingAnchor constraintEqualToAnchor:self.contentView.leadingAnchor constant:12.0],
+            [_avatarView.leadingAnchor constraintEqualToAnchor:_thumbnailView.leadingAnchor],
             [_avatarView.widthAnchor constraintEqualToConstant:36.0],
             [_avatarView.heightAnchor constraintEqualToConstant:36.0],
 
@@ -102,21 +105,30 @@
             [_nameLabel.trailingAnchor constraintEqualToAnchor:_starButton.leadingAnchor constant:-8.0],
 
             [_starButton.centerYAnchor constraintEqualToAnchor:_nameLabel.centerYAnchor],
-            [_starButton.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-10.0],
+            [_starButton.trailingAnchor constraintEqualToAnchor:_thumbnailView.trailingAnchor],
             [_starButton.widthAnchor constraintEqualToConstant:34.0],
             [_starButton.heightAnchor constraintEqualToConstant:34.0],
 
             [_titleLabel.topAnchor constraintEqualToAnchor:_nameLabel.bottomAnchor constant:3.0],
             [_titleLabel.leadingAnchor constraintEqualToAnchor:_nameLabel.leadingAnchor],
-            [_titleLabel.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-12.0],
+            [_titleLabel.trailingAnchor constraintEqualToAnchor:_thumbnailView.trailingAnchor],
 
             [_gameLabel.topAnchor constraintEqualToAnchor:_titleLabel.bottomAnchor constant:4.0],
             [_gameLabel.leadingAnchor constraintEqualToAnchor:_nameLabel.leadingAnchor],
-            [_gameLabel.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-12.0],
+            [_gameLabel.trailingAnchor constraintEqualToAnchor:_thumbnailView.trailingAnchor],
             [_gameLabel.bottomAnchor constraintEqualToAnchor:self.contentView.bottomAnchor constant:-12.0],
         ]];
     }
     return self;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    CGFloat available = CGRectGetWidth(self.contentView.bounds) - 24.0;
+    CGFloat width = MIN(560.0, MAX(160.0, available));
+    if (fabs(width - self.thumbnailWidthConstraint.constant) > 0.5) {
+        self.thumbnailWidthConstraint.constant = width;
+    }
 }
 
 - (void)configureWithUser:(TVUser *)user {

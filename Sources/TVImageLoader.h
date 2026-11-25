@@ -9,6 +9,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable UIImage *)cachedImageForURL:(NSString *)urlString;
 - (void)loadImageURL:(NSString *)urlString completion:(void (^)(UIImage * _Nullable image))completion;
 - (void)prefetchURLs:(NSArray<NSString *> *)urlStrings;
+- (void)clearCache;
+- (void)probeURL:(NSString *)urlString completion:(void (^)(NSString *report))completion;
 
 @end
 
