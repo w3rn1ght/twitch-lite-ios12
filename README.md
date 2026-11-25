@@ -1,10 +1,17 @@
 # Twitch Lite (iOS 12)
 
+[![Build Twitch Lite](https://github.com/w3rn1ght/twitch-lite-ios12/actions/workflows/build.yml/badge.svg)](https://github.com/w3rn1ght/twitch-lite-ios12/actions/workflows/build.yml)
+
 Нативный клиент Twitch для джейлбрейкнутого iOS 12. Написан на Objective-C/UIKit,
 собирается через Theos и ставится как `.deb` в `/Applications/TwitchLite.app`.
 
 Интерфейс на русском, тёмная тема и палитра повторяют официальное приложение
 Twitch (`#0e0e10`, `#18181b`, `#9147ff`).
+
+## Скачать готовый .deb
+
+Готовые сборки лежат в [Releases](https://github.com/w3rn1ght/twitch-lite-ios12/releases):
+`com.w3rn1ght.twitchlite_<версия>_iphoneos-arm.deb`.
 
 ## Возможности
 
