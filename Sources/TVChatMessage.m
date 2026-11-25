@@ -140,10 +140,14 @@ static NSArray<TVEmote *> *TVParseEmotes(NSString *tag, NSString *text) {
     message.badges = badges;
 
     NSString *text = params.lastObject ?: @"";
-    if ([text hasPrefix:@"\u0001ACTION "]) {
+    // IRC wraps /me messages in the control character U+0001, which cannot be
+    // written as a single \u escape in a C string literal.
+    static NSString *const actionPrefix = @"\x01" @"ACTION ";
+    static NSString *const actionSuffix = @"\x01";
+    if ([text hasPrefix:actionPrefix]) {
         message.isAction = YES;
-        text = [text substringFromIndex:8];
-        if ([text hasSuffix:@"\u0001"]) {
+        text = [text substringFromIndex:actionPrefix.length];
+        if ([text hasSuffix:actionSuffix]) {
             text = [text substringToIndex:text.length - 1];
         }
     }
