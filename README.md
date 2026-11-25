@@ -53,7 +53,7 @@ export THEOS_MAKE_PATH=$THEOS/makefiles
 make package FINALPACKAGE=1
 ```
 
-Готовый пакет появится в `packages/com.w3rn1ght.twitchlite_1.0.0_iphoneos-arm.deb`.
+Готовый пакет появится в `packages/com.w3rn1ght.twitchlite_1.1.0_iphoneos-arm.deb`.
 
 Скрипт-обёртка (выставляет права на maintainer-скрипты и запускает сборку):
 
@@ -65,7 +65,7 @@ make package FINALPACKAGE=1
 
 В репозитории есть workflow `.github/workflows/build.yml`: он поднимает
 macOS-раннер, ставит Theos и iOS 12.4 SDK, собирает `.deb` и складывает его в
-артефакты. При пуше тега вида `v1.0.0` пакет автоматически прикрепляется к
+артефакты. При пуше тега вида `v1.1.0` пакет автоматически прикрепляется к
 релизу.
 
 Запуск вручную: **Actions → Build Twitch Lite → Run workflow**.
@@ -75,7 +75,7 @@ macOS-раннер, ставит Theos и iOS 12.4 SDK, собирает `.deb` 
 ```sh
 scp packages/*.deb root@<ipadress>:/var/root/
 ssh root@<ipadress>
-dpkg -i /var/root/com.w3rn1ght.twitchlite_1.0.0_iphoneos-arm.deb
+dpkg -i /var/root/com.w3rn1ght.twitchlite_1.1.0_iphoneos-arm.deb
 ```
 
 `postinst` сам вызывает `uicache` и `sbreload`, иконка появляется на домашнем

@@ -328,25 +328,25 @@
 
     CGFloat streamCardWidth = width >= 700.0 ? 300.0 : MAX(210.0, MIN(280.0, width * 0.64));
     CGFloat streamCardHeight = [TVHomeStreamCard heightForWidth:streamCardWidth];
-    CGFloat x = 16.0;
+    CGFloat x = 0.0;
     for (UIView *card in self.liveRow.subviews) {
         card.frame = CGRectMake(x, 0.0, streamCardWidth, streamCardHeight);
         x += streamCardWidth + 12.0;
     }
     if (self.liveRow) {
-        self.liveRow.contentSize = CGSizeMake(MAX(0.0, x - 12.0 + 16.0), streamCardHeight);
+        self.liveRow.contentSize = CGSizeMake(MAX(0.0, x - 12.0), streamCardHeight);
         self.liveRowHeight.constant = streamCardHeight;
     }
 
     CGFloat gameCardWidth = width >= 700.0 ? 148.0 : MAX(112.0, MIN(140.0, width * 0.32));
     CGFloat gameCardHeight = [TVHomeGameCard heightForWidth:gameCardWidth];
-    x = 16.0;
+    x = 0.0;
     for (UIView *card in self.gamesRow.subviews) {
         card.frame = CGRectMake(x, 0.0, gameCardWidth, gameCardHeight);
         x += gameCardWidth + 12.0;
     }
     if (self.gamesRow) {
-        self.gamesRow.contentSize = CGSizeMake(MAX(0.0, x - 12.0 + 16.0), gameCardHeight);
+        self.gamesRow.contentSize = CGSizeMake(MAX(0.0, x - 12.0), gameCardHeight);
         self.gamesRowHeight.constant = gameCardHeight;
     }
 }
