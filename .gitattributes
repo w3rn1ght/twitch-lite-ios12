@@ -1,0 +1,5 @@
+# Keep shell scripts, Makefiles and sources LF so they work on macOS/Linux/iOS.
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.png binary
+*.jpg binary

@@ -1,0 +1,11 @@
+Package: com.w3rn1ght.twitchlite
+Name: Twitch Lite
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: Native Twitch client for jailbroken iOS 12: login, following, search, favourites, profile, HLS playback and working chat.
+Homepage: https://twitch.tv
+Maintainer: w3rn1ght
+Author: w3rn1ght
+Section: Applications
+Depends: firmware (>= 12.0)
+Icon: file:///Applications/TwitchLite.app/Icon-60@2x.png
